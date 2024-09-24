@@ -60,7 +60,7 @@ def login():
         pswd = data.get('password')
 
         if not email or not pswd:
-            return jsonify({'error': 'Invalid name or passowrd'}), 400
+            return jsonify({'error': 'Invalid email or passowrd'}), 400
         cursor = g.db.cursor(dictionary=True)
         cursor.execute('SELECT * FROM tbl_user WHERE email = %s OR mobile_number=%s AND is_activate=1 AND is_delete=0', (email,mobile_number,))
         user = cursor.fetchone()    
@@ -132,6 +132,7 @@ def upload_image():
     return jsonify({'message': 'Data registered successfully',"data":result}), 201
 
 @authetication_bp.get('/get_history/<int:user_id>')
+@jwt_required()
 def get_history(user_id):
     cursor = g.db.cursor(dictionary=True)
     cursor.execute(f'SELECT * FROM tbl_image_upload WHERE user_id ={user_id}')
